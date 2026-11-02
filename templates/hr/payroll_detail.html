@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+    <h1 class="text-2xl font-bold">دوره‌ی {{ payroll.year }}/{{ payroll.month|stringformat:"02d" }}</h1>
+    <div class="flex gap-2">
+        {% if payroll.status == 'draft' or payroll.status == 'calculated' %}
+            <form method="post" action="{% url 'hr:payroll_calculate' payroll.pk %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline">محاسبه / بازمحاسبه</button>
+            </form>
+        {% endif %}
+        {% if payroll.status == 'calculated' %}
+            <form method="post" action="{% url 'hr:payroll_post' payroll.pk %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">صدور سند</button>
+            </form>
+        {% endif %}
+        {% if payroll.status == 'posted' and payroll.journal %}
+            <a href="{% url 'accounting:journal_detail' payroll.journal.pk %}" class="btn btn-outline">
+                مشاهده سند {{ payroll.journal.number }}
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+    <div class="card p-4">
+        <div class="text-xs text-gray-500">جمع حقوق</div>
+        <div class="text-lg font-mono font-bold">{{ payroll.total_gross|money }}</div>
+    </div>
+    <div class="card p-4">
+        <div class="text-xs text-gray-500">بیمه (کارمند + کارفرما)</div>
+        <div class="text-lg font-mono font-bold text-red-600">{{ payroll.total_insurance_employee|money }} + {{ payroll.total_insurance_employer|money }}</div>
+    </div>
+    <div class="card p-4">
+        <div class="text-xs text-gray-500">مالیات</div>
+        <div class="text-lg font-mono font-bold text-red-600">{{ payroll.total_income_tax|money }}</div>
+    </div>
+    <div class="card p-4">
+        <div class="text-xs text-gray-500">خالص پرداختی</div>
+        <div class="text-lg font-mono font-bold text-green-600">{{ payroll.total_net|money }}</div>
+    </div>
+    <div class="card p-4">
+        <div class="text-xs text-gray-500">وضعیت</div>
+        <div class="text-lg font-bold">{{ payroll.get_status_display }}</div>
+    </div>
+</div>
+
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>کارمند</th><th>روز</th><th>اضافه‌کاری</th><th>حقوق پایه</th><th>مزایا</th><th>اضافه‌کاری</th><th>جمع</th><th>بیمه</th><th>مالیات</th><th>خالص</th></tr></thead>
+        <tbody>
+        {% for p in payslips %}
+            <tr>
+                <td class="text-xs">{{ p.employee.full_name }}</td>
+                <td>{{ p.days_worked }}</td>
+                <td>{{ p.overtime_hours }}</td>
+                <td class="font-mono text-xs">{{ p.base_salary|money }}</td>
+                <td class="font-mono text-xs">{{ p.housing_allowance|money }} + {{ p.food_allowance|money }}</td>
+                <td class="font-mono text-xs">{{ p.overtime_pay|money }}</td>
+                <td class="font-mono">{{ p.gross_pay|money }}</td>
+                <td class="font-mono text-red-600">{{ p.insurance_employee|money }}</td>
+                <td class="font-mono text-red-600">{{ p.income_tax|money }}</td>
+                <td class="font-mono font-bold text-green-700">{{ p.net_pay|money }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="10" class="text-center text-gray-400 py-6">هنوز محاسبه نشده. دکمه‌ی «محاسبه» را بزنید.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% load static jalali %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}امیر — حسابداری{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#4d6bfe">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="امیر">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.svg">
+    <link rel="icon" type="image/svg+xml" href="/static/icons/logo.svg">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/browser-config.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+{% if user.is_authenticated %}
+    <!-- Mobile overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
+{% endif %}
+
+<div class="flex">
+    {% if user.is_authenticated %}
+    <!-- Sidebar -->
+    <aside id="sidebar"
+           class="w-64 bg-white border-l border-gray-200 h-screen p-4 fixed right-0 top-0 overflow-y-auto z-40
+                  transform transition-transform duration-200 translate-x-full md:translate-x-0">
+        <div class="flex items-center justify-between mb-6">
+            <a href="/" class="text-xl font-bold text-[#4d6bfe]">امیر</a>
+            <button id="sidebar-close" class="md:hidden text-gray-500 text-2xl leading-none" aria-label="بستن">&times;</button>
+        </div>
+        <nav class="space-y-1 text-sm">
+            <a href="{% url 'core:dashboard' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">داشبورد</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">حسابداری</div>
+            <a href="{% url 'accounting:accounts' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">حساب‌ها</a>
+            <a href="{% url 'accounting:journals' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">اسناد</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">گزارش‌ها</div>
+            <a href="{% url 'accounting:trial_balance' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">تراز آزمایشی</a>
+            <a href="{% url 'accounting:ledger' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">دفتر کل</a>
+            <a href="{% url 'accounting:balance_sheet' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">ترازنامه</a>
+            <a href="{% url 'accounting:income_statement' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">سود و زیان</a>
+            <a href="{% url 'accounting:close_fiscal_year' %}" class="block px-3 py-2.5 rounded-lg hover:bg-red-50 text-red-600">بستن سال مالی</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">فروش</div>
+            <a href="{% url 'sales:invoices' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">فاکتورها</a>
+            <a href="{% url 'sales:returns' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">برگشت از فروش</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">خرید</div>
+            <a href="{% url 'purchases:invoices' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">فاکتورهای خرید</a>
+            <a href="{% url 'purchases:returns' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">برگشت از خرید</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">انبار</div>
+            <a href="{% url 'inventory:balances' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">موجودی فعلی</a>
+            <a href="{% url 'inventory:moves' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">گردش موجودی</a>
+            <a href="{% url 'inventory:stock_in' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">ورود کالا</a>
+            <a href="{% url 'inventory:warehouses' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">انبارها</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">منابع انسانی</div>
+            <a href="{% url 'hr:employees' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">کارمندان</a>
+            <a href="{% url 'hr:attendance' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">حضور و غیاب</a>
+            <a href="{% url 'hr:payrolls' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">دوره‌های حقوق</a>
+            <a href="{% url 'hr:payroll_config' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">تنظیمات حقوق</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">مودیان</div>
+            <a href="{% url 'moadian:invoices' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">فاکتورهای ارسالی</a>
+            <a href="{% url 'moadian:config' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">تنظیمات</a>
+            <a href="{% url 'moadian:server_info' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">تست اتصال</a>
+            <a href="{% url 'moadian:economic_inquiry' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">استعلام کد اقتصادی</a>
+
+            <div class="pt-3 pb-1 text-xs text-gray-400 px-3">سیستم</div>
+            <a href="{% url 'core:approvals' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">درخواست‌های تأیید</a>
+            <a href="{% url 'core:activity' %}" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">لاگ فعالیت</a>
+            <a href="/api/v1/" class="block px-3 py-2.5 rounded-lg hover:bg-blue-50">مستندات REST</a>
+
+            <button id="install-btn" class="hidden mt-4 w-full btn btn-primary">نصب برنامه</button>
+        </nav>
+    </aside>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="w-full flex-1 min-h-screen {% if user.is_authenticated %}md:mr-64{% endif %}">
+
+        {% if user.is_authenticated %}
+        <!-- Header -->
+        <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-gray-200 px-4 py-3">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                    <button id="menu-toggle" class="md:hidden text-2xl text-gray-700 p-1" aria-label="منو">&#9776;</button>
+                    <div class="text-sm text-gray-600 truncate">
+                        {% if active_company %}<span class="font-medium text-gray-800">{{ active_company.name }}</span>{% endif %}
+                        {% if active_fiscal_year %}<span class="text-gray-400 mx-1">·</span>{{ active_fiscal_year.name }}{% endif %}
+                    </div>
+                </div>
+                <div class="text-sm flex items-center gap-3 flex-shrink-0">
+                    <span class="hidden sm:inline">{{ user.get_full_name|default:user.username }}</span>
+                    <form method="post" action="{% url 'accounts:logout' %}" class="inline m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="text-gray-500 hover:text-red-600 text-xs bg-transparent border-0 cursor-pointer p-0 transition-colors">خروج</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+        {% endif %}
+
+        <!-- Content -->
+        <div class="p-4 md:p-6 {% if not user.is_authenticated %}h-screen flex items-center justify-center bg-gray-50{% endif %}">
+            {% if messages %}
+                <div class="mb-4 space-y-2 w-full {% if not user.is_authenticated %}max-w-md absolute top-10{% endif %}">
+                    {% for m in messages %}
+                        <div class="px-4 py-2 rounded-lg text-sm
+                            {% if m.tags == 'error' %}bg-red-50 text-red-700 border border-red-200
+                            {% elif m.tags == 'warning' %}bg-yellow-50 text-yellow-700 border border-yellow-200
+                            {% elif m.tags == 'success' %}bg-green-50 text-green-700 border border-green-200
+                            {% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
+                            {{ m }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</div>
+
+<script src="{% static 'js/pwa.js' %}" defer></script>
+<script>
+    document.getElementById('sidebar-close')?.addEventListener('click', () => {
+        const s = document.getElementById('sidebar');
+        if (s) {
+            s.classList.add('translate-x-full');
+            s.classList.remove('translate-x-0');
+            document.getElementById('sidebar-overlay').classList.add('hidden');
+        }
+    });
+</script>
+</body>
+</html>

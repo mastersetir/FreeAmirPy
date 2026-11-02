@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">استعلام کد اقتصادی</h1>
+<div class="card p-6 max-w-2xl mb-4">
+    <form method="post" class="space-y-3">
+        {% csrf_token %}
+        <div>
+            <label class="block text-sm mb-1">{{ form.economic_code.label }}</label>
+            {{ form.economic_code }}
+        </div>
+        <button type="submit" class="btn btn-primary">استعلام</button>
+    </form>
+</div>
+{% if result %}
+    <div class="card p-5">
+        <h2 class="font-semibold mb-2">پاسخ</h2>
+        <pre class="text-xs bg-gray-50 p-3 rounded overflow-auto">{{ result }}</pre>
+    </div>
+{% endif %}
+{% if error %}
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded-lg">{{ error }}</div>
+{% endif %}
+<a href="{% url 'moadian:config' %}" class="btn btn-outline mt-4">بازگشت</a>
+{% endblock %}

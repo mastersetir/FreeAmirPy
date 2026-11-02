@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">اطلاعات سرور مودیان</h1>
+{% if error %}
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm p-4 rounded-lg mb-4">
+        خطا: {{ error }}
+    </div>
+{% endif %}
+{% if info %}
+    <div class="card p-5 mb-4">
+        <h2 class="font-semibold mb-2">Server Information</h2>
+        <pre class="text-xs bg-gray-50 p-3 rounded overflow-auto">{{ info }}</pre>
+    </div>
+{% endif %}
+{% if fiscal %}
+    <div class="card p-5">
+        <h2 class="font-semibold mb-2">Fiscal Information</h2>
+        <pre class="text-xs bg-gray-50 p-3 rounded overflow-auto">{{ fiscal }}</pre>
+    </div>
+{% endif %}
+<a href="{% url 'moadian:config' %}" class="btn btn-outline mt-4">بازگشت</a>
+{% endblock %}

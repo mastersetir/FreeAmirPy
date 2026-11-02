@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">فاکتور فروش جدید</h1>
+<form method="post" class="space-y-6">
+    {% csrf_token %}
+    <div class="card p-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div><label class="block text-sm mb-1">شماره</label>{{ form.number }}</div>
+        <div><label class="block text-sm mb-1">تاریخ</label>{{ form.date }}</div>
+        <div><label class="block text-sm mb-1">مشتری</label>{{ form.customer }}</div>
+        <div><label class="block text-sm mb-1">روش تسویه</label>{{ form.settlement_method }}</div>
+    </div>
+    <div class="card overflow-hidden">
+        <div class="px-4 py-3 border-b bg-gray-50 font-semibold">سطرها</div>
+        {{ formset.management_form }}
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>کالا</th><th>انبار</th><th>مقدار</th><th>قیمت واحد</th><th>تخفیف</th><th>VAT ٪</th><th>حذف</th></tr></thead>
+                <tbody>
+                {% for f in formset %}
+                    <tr>
+                        {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+                        <td>{{ f.product }}</td><td>{{ f.warehouse }}</td>
+                        <td>{{ f.quantity }}</td><td>{{ f.unit_price }}</td>
+                        <td>{{ f.discount }}</td><td>{{ f.vat_rate }}</td><td>{{ f.DELETE }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="btn btn-primary">ذخیره فاکتور</button>
+        <a href="{% url 'sales:invoices' %}" class="btn btn-outline">انصراف</a>
+    </div>
+</form>
+{% endblock %}

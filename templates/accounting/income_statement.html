@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">صورت سود و زیان — {{ fiscal_year.name }}</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div class="card p-5">
+        <h2 class="font-semibold mb-3 text-green-700">درآمدها</h2>
+        <table>
+            <thead><tr><th>حساب</th><th class="text-left">مبلغ</th></tr></thead>
+            <tbody>
+            {% for r in revenues %}
+                <tr><td>{{ r.code }} — {{ r.name }}</td><td class="text-left font-mono">{{ r.amount|money }}</td></tr>
+            {% empty %}<tr><td colspan="2" class="text-gray-400 text-sm">—</td></tr>{% endfor %}
+            </tbody>
+            <tfoot><tr class="bg-gray-100 font-bold"><td>جمع درآمدها</td><td class="text-left font-mono">{{ total_revenue|money }}</td></tr></tfoot>
+        </table>
+    </div>
+
+    <div class="card p-5">
+        <h2 class="font-semibold mb-3 text-red-700">هزینه‌ها</h2>
+        <table>
+            <thead><tr><th>حساب</th><th class="text-left">مبلغ</th></tr></thead>
+            <tbody>
+            {% for r in expenses %}
+                <tr><td>{{ r.code }} — {{ r.name }}</td><td class="text-left font-mono">{{ r.amount|money }}</td></tr>
+            {% empty %}<tr><td colspan="2" class="text-gray-400 text-sm">—</td></tr>{% endfor %}
+            </tbody>
+            <tfoot><tr class="bg-gray-100 font-bold"><td>جمع هزینه‌ها</td><td class="text-left font-mono">{{ total_expense|money }}</td></tr></tfoot>
+        </table>
+    </div>
+</div>
+
+<div class="card p-5 {% if net_income >= 0 %}bg-green-50{% else %}bg-red-50{% endif %}">
+    <div class="text-sm text-gray-600 mb-1">{% if net_income >= 0 %}سود خالص{% else %}زیان خالص{% endif %}</div>
+    <div class="text-3xl font-bold font-mono">{{ net_income|money }}</div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">پروفایل</h1>
+<div class="card p-6 max-w-lg">
+    <div class="space-y-3 text-sm">
+        <div><span class="text-gray-500">نام کاربری:</span> {{ user.username }}</div>
+        <div><span class="text-gray-500">نام:</span> {{ user.get_full_name|default:"—" }}</div>
+        <div><span class="text-gray-500">ایمیل:</span> {{ user.email|default:"—" }}</div>
+        <div><span class="text-gray-500">نقش:</span> {{ user.get_role_display }}</div>
+    </div>
+</div>
+{% endblock %}

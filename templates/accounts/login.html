@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}ورود{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-12 md:mt-20">
+    <div class="card p-8">
+        <h1 class="text-2xl font-bold mb-6 text-center">ورود به امیر</h1>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm mb-1">نام کاربری</label>
+                {{ form.username }}
+            </div>
+            <div>
+                <label class="block text-sm mb-1">رمز عبور</label>
+                {{ form.password }}
+            </div>
+            {% if form.errors %}<div class="text-red-600 text-sm">نام کاربری یا رمز عبور اشتباه است.</div>{% endif %}
+            <button type="submit" class="btn btn-primary w-full">ورود</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

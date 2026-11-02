@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">فاکتورهای فروش</h1>
+    <a href="{% url 'sales:invoice_new' %}" class="btn btn-primary">فاکتور جدید</a>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>شماره</th><th>تاریخ</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+        <tbody>
+        {% for inv in invoices %}
+            <tr>
+                <td class="font-mono">{{ inv.number }}</td>
+                <td>{{ inv.date|to_jalali }}</td>
+                <td>{{ inv.customer.name }}</td>
+                <td>{{ inv.total_amount|money }}</td>
+                <td>{{ inv.get_status_display }}</td>
+                <td class="space-x-2 space-x-reverse whitespace-nowrap">
+                    {% if inv.status == 'draft' %}
+                    <form method="post" action="{% url 'sales:invoice_post' inv.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-[#4d6bfe] text-xs hover:underline">ثبت سند</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'moadian:send' 'sale_invoice' inv.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-purple-600 text-xs hover:underline">ارسال به مودیان</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center text-gray-400 py-6">فاکتوری وجود ندارد.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

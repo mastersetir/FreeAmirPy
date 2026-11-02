@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">دفتر کل</h1>
+<form method="get" class="card p-4 mb-4 flex flex-col md:flex-row gap-3 md:items-end">
+    <div class="flex-1">
+        <label class="block text-sm mb-1">حساب</label>
+        <select name="account" class="form-input">
+            <option value="">— انتخاب کنید —</option>
+            {% for a in accounts %}
+                <option value="{{ a.pk }}" {% if account and account.pk == a.pk %}selected{% endif %}>{{ a.code }} — {{ a.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">نمایش</button>
+</form>
+
+{% if account %}
+<div class="card p-4 mb-4 text-sm">
+    <span class="text-gray-600">حساب:</span> <span class="font-medium">{{ account.code }} — {{ account.name }}</span>
+    <span class="text-gray-600 mr-4">مانده:</span> <span class="font-bold">{{ balance|money }}</span>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>تاریخ</th><th>شماره سند</th><th>شرح</th><th>بدهکار</th><th>بستانکار</th><th>مانده</th></tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{ r.date|to_jalali }}</td>
+                <td class="font-mono text-xs">{{ r.number }}</td>
+                <td>{{ r.description }}</td>
+                <td>{% if r.debit %}{{ r.debit|money }}{% endif %}</td>
+                <td>{% if r.credit %}{{ r.credit|money }}{% endif %}</td>
+                <td>{{ r.balance|money }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center text-gray-400 py-6">گردشی وجود ندارد.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

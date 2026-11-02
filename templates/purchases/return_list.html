@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">برگشت از خرید</h1>
+    <a href="{% url 'purchases:return_new' %}" class="btn btn-primary">برگشت جدید</a>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>شماره</th><th>تاریخ</th><th>فاکتور اصلی</th><th>تأمین‌کننده</th><th>مبلغ</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+        <tbody>
+        {% for r in returns %}
+            <tr>
+                <td class="font-mono">{{ r.number }}</td>
+                <td>{{ r.date|to_jalali }}</td>
+                <td class="font-mono text-xs">{{ r.invoice.number }}</td>
+                <td>{{ r.invoice.supplier.name }}</td>
+                <td>{{ r.total_amount|money }}</td>
+                <td>{{ r.get_status_display }}</td>
+                <td class="space-x-2 space-x-reverse whitespace-nowrap">
+                    {% if r.status == 'draft' %}
+                        <a href="{% url 'purchases:return_edit' r.pk %}" class="text-[#4d6bfe] text-xs hover:underline">ویرایش</a>
+                        <form method="post" action="{% url 'purchases:return_post' r.pk %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-green-600 text-xs hover:underline">ثبت</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{% url 'moadian:send' 'purchase_return' r.pk %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-purple-600 text-xs hover:underline">ارسال به مودیان</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7" class="text-center text-gray-400 py-6">برگشتی ثبت نشده است.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

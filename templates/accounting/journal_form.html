@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">{% if journal %}ویرایش سند{% else %}سند جدید{% endif %}</h1>
+<form method="post" class="space-y-6">
+    {% csrf_token %}
+    <div class="card p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div><label class="block text-sm mb-1">{{ form.number.label }}</label>{{ form.number }}</div>
+            <div><label class="block text-sm mb-1">{{ form.date.label }}</label>{{ form.date }}</div>
+            <div class="md:col-span-3"><label class="block text-sm mb-1">{{ form.description.label }}</label>{{ form.description }}</div>
+        </div>
+    </div>
+
+    <div class="card overflow-hidden">
+        <div class="px-4 py-3 border-b bg-gray-50 font-semibold">آرتیکل‌ها</div>
+        {{ formset.management_form }}
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>حساب</th><th>بدهکار</th><th>بستانکار</th><th>شرح</th><th>حذف</th></tr></thead>
+                <tbody>
+                {% for f in formset %}
+                    <tr>
+                        {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+                        <td>{{ f.account }}</td><td>{{ f.debit }}</td><td>{{ f.credit }}</td>
+                        <td>{{ f.description }}</td><td>{{ f.DELETE }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="flex gap-2">
+        <button type="submit" class="btn btn-primary">ذخیره پیش‌نویس</button>
+        <a href="{% url 'accounting:journals' %}" class="btn btn-outline">انصراف</a>
+    </div>
+</form>
+{% endblock %}

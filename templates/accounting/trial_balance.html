@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">تراز آزمایشی — {{ active_fiscal_year.name }}</h1>
+{% if not balanced %}<div class="bg-red-50 text-red-700 p-3 rounded-lg mb-4 text-sm">⚠️ تراز نامتوازن است!</div>{% endif %}
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>کد</th><th>نام</th><th>بدهکار</th><th>بستانکار</th><th>مانده</th></tr></thead>
+        <tbody>
+        {% for r in rows %}
+            <tr>
+                <td class="font-mono text-xs">{{ r.code }}</td>
+                <td>{{ r.name }}</td>
+                <td>{{ r.debit|money }}</td>
+                <td>{{ r.credit|money }}</td>
+                <td class="{% if r.balance > 0 %}text-blue-700{% elif r.balance < 0 %}text-red-700{% endif %}">{{ r.balance|money }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="text-center text-gray-400 py-6">سند ثبت‌شده‌ای وجود ندارد.</td></tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="bg-gray-100 font-bold">
+                <td colspan="2">جمع کل</td>
+                <td>{{ total_debit|money }}</td>
+                <td>{{ total_credit|money }}</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}

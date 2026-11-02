@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">درخواست‌های تأیید</h1>
+<form method="get" class="card p-3 mb-4 flex items-end gap-3">
+    <div>
+        <label class="block text-xs mb-1">وضعیت</label>
+        <select name="status" class="form-input">
+            <option value="">همه</option>
+            {% for val, label in statuses %}
+                <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button class="btn btn-outline">فیلتر</button>
+</form>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>#</th><th>سند</th><th>درخواست‌دهنده</th><th>زمان</th><th>وضعیت</th><th>بررسی‌کننده</th><th>عملیات</th></tr></thead>
+        <tbody>
+        {% for r in requests %}
+            <tr>
+                <td>{{ r.pk }}</td>
+                <td class="text-xs">{{ r.content_type.model }} — {{ r.description|truncatechars:50 }}</td>
+                <td>{{ r.requested_by.username }}</td>
+                <td class="text-xs">{{ r.requested_at|to_jalali_dt }}</td>
+                <td>
+                    {% if r.status == 'approved' %}<span class="text-green-600">{{ r.get_status_display }}</span>
+                    {% elif r.status == 'rejected' %}<span class="text-red-600">{{ r.get_status_display }}</span>
+                    {% else %}<span class="text-yellow-600">{{ r.get_status_display }}</span>{% endif %}
+                </td>
+                <td class="text-xs">{{ r.reviewed_by.username|default:"—" }}</td>
+                <td>
+                    {% if r.status == 'pending' and user.role == 'admin' %}
+                        <form method="post" action="{% url 'core:approval_review' r.pk 'approve' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-green-600 text-xs hover:underline">تأیید</button>
+                        </form>
+                        <form method="post" action="{% url 'core:approval_review' r.pk 'reject' %}" class="inline mr-2">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-600 text-xs hover:underline">رد</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7" class="text-center text-gray-400 py-6">درخواستی وجود ندارد.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

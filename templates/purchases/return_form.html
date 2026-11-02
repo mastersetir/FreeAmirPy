@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">برگشت از خرید — {{ ret.number }}</h1>
+<div class="card p-4 mb-4 text-sm">
+    <span class="text-gray-500">فاکتور اصلی:</span> <span class="font-mono">{{ ret.invoice.number }}</span>
+    <span class="text-gray-500 mr-4">تأمین‌کننده:</span> {{ ret.invoice.supplier.name }}
+    <span class="text-gray-500 mr-4">تاریخ فاکتور:</span> {{ ret.invoice.date|to_jalali }}
+</div>
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div class="card p-4 grid grid-cols-2 gap-4">
+        <div><label class="block text-sm mb-1">شماره</label>{{ form.number }}</div>
+        <div><label class="block text-sm mb-1">تاریخ</label>{{ form.date }}</div>
+    </div>
+    <div class="card overflow-hidden">
+        <div class="px-4 py-3 border-b bg-gray-50 font-semibold">سطرها</div>
+        {{ formset.management_form }}
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>کالا</th><th>مقدار قابل برگشت</th><th>مقدار برگشتی</th><th>تخفیف</th><th>حذف</th></tr></thead>
+                <tbody>
+                {% for f in formset %}
+                    <tr>
+                        {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+                        <td>{{ f.instance.product.code }} — {{ f.instance.product.name }}</td>
+                        <td class="text-xs text-gray-600">{{ f.instance.max_returnable }}</td>
+                        <td>{{ f.quantity }}</td>
+                        <td>{{ f.discount }}</td>
+                        <td>{{ f.DELETE }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="flex gap-2">
+        <button type="submit" class="btn btn-primary">ذخیره</button>
+        <a href="{% url 'purchases:returns' %}" class="btn btn-outline">انصراف</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,76 @@
+/* FreeAmir — shared styles. All reusable component classes. */
+
+body {
+    font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@supports (padding: max(0px)) {
+    body { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+.form-input {
+    width: 100%;
+    padding: .5rem .75rem;
+    border: 1px solid #d1d5db;
+    border-radius: .5rem;
+    background: white;
+    font-size: 1rem; /* prevents iOS auto-zoom */
+}
+.form-input:focus {
+    outline: none;
+    border-color: #4d6bfe;
+    box-shadow: 0 0 0 3px rgba(77, 107, 254, .15);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    padding: .55rem 1rem;
+    border-radius: .5rem;
+    font-weight: 500;
+    font-size: .875rem;
+    cursor: pointer;
+    border: none;
+    transition: .15s;
+}
+.btn-primary { background: #4d6bfe; color: white; }
+.btn-primary:hover { background: #3a56e0; }
+.btn-primary:disabled { background: #9ba7c4; cursor: not-allowed; }
+.btn-outline { background: white; color: #4d6bfe; border: 1px solid #4d6bfe; }
+.btn-outline:hover { background: #eef1ff; }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+
+.card {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: .75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .875rem;
+}
+th {
+    text-align: right;
+    padding: .75rem;
+    background: #f9fafb;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e5e5;
+    white-space: nowrap;
+}
+td {
+    padding: .65rem .75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+tr:hover td { background: #fafbff; }
+
+.table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}

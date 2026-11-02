@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+    <h1 class="text-2xl font-bold">سند {{ journal.number }}</h1>
+    <div class="flex gap-2">
+        {% if not journal.is_posted %}
+            <a href="{% url 'accounting:journal_edit' journal.pk %}" class="btn btn-outline">ویرایش</a>
+            <form method="post" action="{% url 'accounting:journal_post' journal.pk %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">ثبت نهایی</button>
+            </form>
+        {% else %}
+            <span class="text-green-600 font-medium text-sm">ثبت‌شده در {{ journal.posted_at|to_jalali_dt }}</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card p-6 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <div><span class="text-gray-500">تاریخ:</span> {{ journal.date|to_jalali }}</div>
+        <div><span class="text-gray-500">سال مالی:</span> {{ journal.fiscal_year.name }}</div>
+        <div><span class="text-gray-500">وضعیت:</span> {% if journal.is_posted %}<span class="text-green-600">ثبت‌شده</span>{% else %}<span class="text-yellow-600">پیش‌نویس</span>{% endif %}</div>
+    </div>
+    <div class="mt-3 text-sm"><span class="text-gray-500">شرح:</span> {{ journal.description }}</div>
+</div>
+
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>کد</th><th>حساب</th><th>بدهکار</th><th>بستانکار</th><th>شرح</th></tr></thead>
+        <tbody>
+        {% for e in journal.entries.all %}
+            <tr>
+                <td class="font-mono text-xs">{{ e.account.code }}</td>
+                <td>{{ e.account.name }}</td>
+                <td>{% if e.debit %}{{ e.debit|money }}{% endif %}</td>
+                <td>{% if e.credit %}{{ e.credit|money }}{% endif %}</td>
+                <td class="text-xs text-gray-600">{{ e.description }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="bg-gray-50 font-bold">
+                <td colspan="2">جمع</td>
+                <td>{{ journal.total_debit|money }}</td>
+                <td>{{ journal.total_credit|money }}</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">موجودی فعلی</h1>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>انبار</th><th>کالا</th><th>موجودی</th><th>بهای میانگین</th><th>ارزش</th></tr></thead>
+        <tbody>
+        {% for b in balances %}
+            <tr>
+                <td>{{ b.warehouse.code }} — {{ b.warehouse.name }}</td>
+                <td>{{ b.product.code }} — {{ b.product.name }}</td>
+                <td class="font-mono">{{ b.quantity }}</td>
+                <td>{{ b.avg_cost|money }}</td>
+                <td class="font-mono">{{ b.total_value|money }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="text-center text-gray-400 py-6">موجودی ثبت نشده است.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

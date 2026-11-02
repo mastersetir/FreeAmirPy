@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+    <h1 class="text-2xl font-bold">دوره‌های حقوق</h1>
+    <div class="flex gap-2">
+        <a href="{% url 'hr:payroll_config' %}" class="btn btn-outline">تنظیمات</a>
+        <a href="{% url 'hr:payroll_new' %}" class="btn btn-primary">دوره جدید</a>
+    </div>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>سال/ماه</th><th>دوره</th><th>وضعیت</th><th>جمع حقوق</th><th>خالص پرداختی</th><th></th></tr></thead>
+        <tbody>
+        {% for p in payrolls %}
+            <tr>
+                <td class="font-mono">{{ p.year }}/{{ p.month|stringformat:"02d" }}</td>
+                <td class="text-xs text-gray-600">{{ p.period_start }} → {{ p.period_end }}</td>
+                <td>{{ p.get_status_display }}</td>
+                <td class="font-mono">{{ p.total_gross|money }}</td>
+                <td class="font-mono">{{ p.total_net|money }}</td>
+                <td><a href="{% url 'hr:payroll_detail' p.pk %}" class="text-[#4d6bfe] text-xs hover:underline">مشاهده</a></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center text-gray-400 py-6">دوره‌ای ثبت نشده است.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

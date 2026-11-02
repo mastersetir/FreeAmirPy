@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">فاکتورهای ارسالی به مودیان</h1>
+<form method="get" class="card p-3 mb-4 flex items-end gap-3">
+    <div>
+        <label class="block text-xs mb-1">نوع سند</label>
+        <select name="document_type" class="form-input">
+            <option value="">همه</option>
+            {% for val, label in document_types %}
+                <option value="{{ val }}" {% if request.GET.document_type == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button class="btn btn-outline">فیلتر</button>
+</form>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>#</th><th>نوع</th><th>سند</th><th>وضعیت</th><th>شماره مرجع</th><th>شناسه مالیاتی</th><th>پیام</th><th>تاریخ</th><th></th></tr></thead>
+        <tbody>
+        {% for r in records %}
+            <tr>
+                <td>{{ r.pk }}</td>
+                <td class="text-xs">{{ r.get_document_type_display }}</td>
+                <td class="text-xs">{{ r.document_repr }}</td>
+                <td>
+                    {% if r.status == 'success' %}<span class="text-green-600">تأیید</span>
+                    {% elif r.status == 'sent' %}<span class="text-blue-600">ارسال شد</span>
+                    {% elif r.status == 'failed' %}<span class="text-red-600">خطا</span>
+                    {% elif r.status == 'rejected' %}<span class="text-red-600">رد شد</span>
+                    {% else %}<span class="text-yellow-600">{{ r.get_status_display }}</span>{% endif %}
+                </td>
+                <td class="font-mono text-xs">{{ r.reference_number|default:"—" }}</td>
+                <td class="font-mono text-xs">{{ r.tax_id|default:"—" }}</td>
+                <td class="text-xs text-red-600">{{ r.error_message|truncatechars:50 }}</td>
+                <td class="text-xs">{{ r.created_at|to_jalali_dt }}</td>
+                <td>
+                    {% if r.reference_number %}
+                    <form method="post" action="{% url 'moadian:refresh' r.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-[#4d6bfe] text-xs hover:underline">به‌روزرسانی</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="9" class="text-center text-gray-400 py-6">رکوردی وجود ندارد.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

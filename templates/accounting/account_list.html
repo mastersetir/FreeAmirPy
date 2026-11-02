@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}حساب‌ها{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">حساب‌ها</h1>
+    <a href="{% url 'accounting:account_new' %}" class="btn btn-primary">حساب جدید</a>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>کد</th><th>نام</th><th>نوع</th><th>قابل ثبت</th><th>فعال</th><th></th></tr></thead>
+        <tbody>
+        {% for a in accounts %}
+            <tr>
+                <td class="font-mono text-xs">{{ a.code }}</td>
+                <td>{{ a.name }}</td>
+                <td>{{ a.get_account_type_display }}</td>
+                <td>{% if a.is_postable %}✓{% else %}<span class="text-gray-400">—</span>{% endif %}</td>
+                <td>{% if a.is_active %}✓{% else %}<span class="text-gray-400">—</span>{% endif %}</td>
+                <td><a href="{% url 'accounting:account_edit' a.pk %}" class="text-[#4d6bfe] text-xs">ویرایش</a></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center text-gray-400 py-6">حسابی وجود ندارد. init_coa را اجرا کنید.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

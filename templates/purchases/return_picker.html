@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">برگشت از خرید — انتخاب فاکتور</h1>
+<div class="card p-6 max-w-2xl">
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label class="block text-sm mb-1">فاکتور خرید ثبت‌شده</label>
+            {{ form.invoice }}
+        </div>
+        <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary">ساخت برگشت</button>
+            <a href="{% url 'purchases:returns' %}" class="btn btn-outline">انصراف</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

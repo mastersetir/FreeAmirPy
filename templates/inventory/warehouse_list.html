@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}انبارها{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">انبارها</h1>
+    <a href="{% url 'inventory:warehouse_new' %}" class="btn btn-primary">انبار جدید</a>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>کد</th><th>نام</th><th>نشانی</th><th>وضعیت</th></tr></thead>
+        <tbody>
+        {% for w in warehouses %}
+            <tr>
+                <td class="font-mono text-xs">{{ w.code }}</td>
+                <td>{{ w.name }}</td>
+                <td class="text-xs text-gray-600">{{ w.address|default:"—"|truncatechars:40 }}</td>
+                <td>{% if w.is_active %}<span class="text-green-600">فعال</span>{% else %}<span class="text-gray-400">غیرفعال</span>{% endif %}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4" class="text-center text-gray-400 py-6">انباری تعریف نشده است.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

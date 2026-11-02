@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+    <h1 class="text-2xl font-bold">ترازنامه</h1>
+    <form method="get" class="flex items-end gap-2">
+        <div>
+            <label class="block text-xs mb-1">تا تاریخ</label>
+            <input type="date" name="as_of" value="{{ as_of_date|date:'Y-m-d' }}" class="form-input">
+        </div>
+        <button class="btn btn-outline">اعمال</button>
+    </form>
+</div>
+
+{% if not balanced %}
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded-lg mb-4">
+        ⚠️ ترازنامه نامتوازن است: دارایی‌ها ({{ total_assets|money }}) ≠ بدهی + سرمایه ({{ total_liabilities_equity|money }})
+    </div>
+{% endif %}
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="card p-5">
+        <h2 class="font-semibold mb-3 text-blue-700">دارایی‌ها</h2>
+        <table>
+            <thead><tr><th>حساب</th><th class="text-left">مانده</th></tr></thead>
+            <tbody>
+            {% for r in assets %}
+                <tr><td>{{ r.code }} — {{ r.name }}</td><td class="text-left font-mono">{{ r.balance|money }}</td></tr>
+            {% empty %}<tr><td colspan="2" class="text-gray-400 text-sm">—</td></tr>{% endfor %}
+            </tbody>
+            <tfoot><tr class="bg-gray-100 font-bold"><td>جمع دارایی‌ها</td><td class="text-left font-mono">{{ total_assets|money }}</td></tr></tfoot>
+        </table>
+    </div>
+
+    <div class="space-y-4">
+        <div class="card p-5">
+            <h2 class="font-semibold mb-3 text-red-700">بدهی‌ها</h2>
+            <table>
+                <thead><tr><th>حساب</th><th class="text-left">مانده</th></tr></thead>
+                <tbody>
+                {% for r in liabilities %}
+                    <tr><td>{{ r.code }} — {{ r.name }}</td><td class="text-left font-mono">{{ r.balance|money }}</td></tr>
+                {% empty %}<tr><td colspan="2" class="text-gray-400 text-sm">—</td></tr>{% endfor %}
+                </tbody>
+                <tfoot><tr class="bg-gray-100 font-bold"><td>جمع بدهی‌ها</td><td class="text-left font-mono">{{ total_liabilities|money }}</td></tr></tfoot>
+            </table>
+        </div>
+
+        <div class="card p-5">
+            <h2 class="font-semibold mb-3 text-green-700">سرمایه</h2>
+            <table>
+                <thead><tr><th>حساب</th><th class="text-left">مانده</th></tr></thead>
+                <tbody>
+                {% for r in equity %}
+                    <tr><td>{{ r.code }} — {{ r.name }}</td><td class="text-left font-mono">{{ r.balance|money }}</td></tr>
+                {% empty %}<tr><td colspan="2" class="text-gray-400 text-sm">—</td></tr>{% endfor %}
+                </tbody>
+                <tfoot><tr class="bg-gray-100 font-bold"><td>جمع سرمایه</td><td class="text-left font-mono">{{ total_equity|money }}</td></tr></tfoot>
+            </table>
+        </div>
+
+        <div class="card p-5 bg-blue-50">
+            <div class="text-sm text-gray-600 mb-1">بدهی + سرمایه</div>
+            <div class="text-2xl font-bold font-mono">{{ total_liabilities_equity|money }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

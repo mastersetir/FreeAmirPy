@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">کارمندان</h1>
+    <a href="{% url 'hr:employee_new' %}" class="btn btn-primary">کارمند جدید</a>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>کد</th><th>نام</th><th>کد ملی</th><th>سمت</th><th>نوع</th><th>حقوق پایه</th><th>استخدام</th><th>وضعیت</th></tr></thead>
+        <tbody>
+        {% for e in employees %}
+            <tr>
+                <td class="font-mono text-xs">{{ e.code }}</td>
+                <td>{{ e.full_name }}</td>
+                <td class="font-mono text-xs">{{ e.national_id }}</td>
+                <td>{{ e.position|default:"—" }}</td>
+                <td>{{ e.get_employee_type_display }}</td>
+                <td class="font-mono">{{ e.base_salary|money }}</td>
+                <td>{{ e.hire_date|to_jalali }}</td>
+                <td>{% if e.is_active %}<span class="text-green-600">فعال</span>{% else %}<span class="text-gray-400">غیرفعال</span>{% endif %}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="8" class="text-center text-gray-400 py-6">کارمندی ثبت نشده است.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block title %}داشبورد{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">داشبورد</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div class="card p-5">
+        <div class="text-sm text-gray-500">کل اسناد</div>
+        <div class="text-3xl font-bold mt-1">{{ stats.journals }}</div>
+    </div>
+    <div class="card p-5">
+        <div class="text-sm text-gray-500">ثبت‌شده</div>
+        <div class="text-3xl font-bold mt-1 text-green-600">{{ stats.posted }}</div>
+    </div>
+    <div class="card p-5">
+        <div class="text-sm text-gray-500">پیش‌نویس</div>
+        <div class="text-3xl font-bold mt-1 text-yellow-600">{{ stats.unposted }}</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="card p-5">
+        <h2 class="font-semibold mb-3">آخرین اسناد</h2>
+        {% if recent_journals %}
+            <table>
+                <thead><tr><th>شماره</th><th>تاریخ</th><th>وضعیت</th></tr></thead>
+                <tbody>
+                    {% for j in recent_journals %}
+                    <tr>
+                        <td><a href="{% url 'accounting:journal_detail' j.pk %}" class="text-[#4d6bfe] hover:underline">{{ j.number }}</a></td>
+                        <td>{{ j.date|to_jalali }}</td>
+                        <td>{% if j.is_posted %}<span class="text-green-600 text-xs">ثبت‌شده</span>{% else %}<span class="text-yellow-600 text-xs">پیش‌نویس</span>{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-gray-400 text-sm">هنوز سندی وجود ندارد.</p>
+        {% endif %}
+    </div>
+
+    <div class="card p-5">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="font-semibold">آخرین فعالیت‌ها</h2>
+            <a href="{% url 'core:activity' %}" class="text-xs text-[#4d6bfe] hover:underline">همه</a>
+        </div>
+        {% if recent_activity %}
+            <ul class="text-sm space-y-2">
+                {% for a in recent_activity %}
+                    <li class="flex justify-between border-b pb-1 gap-2">
+                        <span class="truncate">{{ a.user.username|default:"سیستم" }} — {{ a.get_action_display }} {{ a.entity_repr|truncatechars:30 }}</span>
+                        <span class="text-xs text-gray-400 flex-shrink-0">{{ a.created_at|to_jalali_dt }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-400 text-sm">فعالیتی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

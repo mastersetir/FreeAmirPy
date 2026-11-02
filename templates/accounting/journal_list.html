@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load jalali %}
+{% block content %}
+<div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">اسناد حسابداری</h1>
+    <a href="{% url 'accounting:journal_new' %}" class="btn btn-primary">سند جدید</a>
+</div>
+<div class="card overflow-hidden table-wrap">
+    <table>
+        <thead><tr><th>شماره</th><th>تاریخ</th><th>شرح</th><th>وضعیت</th><th></th></tr></thead>
+        <tbody>
+        {% for j in journals %}
+            <tr>
+                <td class="font-mono">{{ j.number }}</td>
+                <td>{{ j.date|to_jalali }}</td>
+                <td>{{ j.description|truncatechars:60 }}</td>
+                <td>{% if j.is_posted %}<span class="text-green-600 text-xs">ثبت‌شده</span>{% else %}<span class="text-yellow-600 text-xs">پیش‌نویس</span>{% endif %}</td>
+                <td><a href="{% url 'accounting:journal_detail' j.pk %}" class="text-[#4d6bfe] text-xs">مشاهده</a></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="text-center text-gray-400 py-6">سندی وجود ندارد.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if is_paginated %}
+    <div class="mt-4 flex gap-2">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline">قبلی</a>{% endif %}
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline">بعدی</a>{% endif %}
+    </div>
+{% endif %}
+{% endblock %}

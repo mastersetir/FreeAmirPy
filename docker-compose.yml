@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: freeamir
+      POSTGRES_PASSWORD: freeamir
+      POSTGRES_DB: freeamir
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://freeamir:freeamir@db:5432/freeamir
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+volumes:
+  pgdata:

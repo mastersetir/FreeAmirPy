@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">تنظیمات حقوق و دستمزد</h1>
+<div class="card p-6 max-w-2xl">
+    <p class="text-sm text-gray-600 mb-4">
+        این مقادیر برای محاسبه‌ی فیش حقوقی استفاده می‌شوند. نرخ‌های بیمه مطابق قانون کار ایران ۷٪ (کارمند) و ۲۳٪ (کارفرما) است.
+    </p>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label class="block text-sm mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="text-xs text-gray-500 mt-1">{{ field.help_text }}</div>{% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">ذخیره</button>
+    </form>
+</div>
+{% endblock %}
